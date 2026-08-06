@@ -1,5 +1,5 @@
 {
-  "name": "api-typescript",
+  "name": "cs-esports-api",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
