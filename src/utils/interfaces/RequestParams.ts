@@ -1,3 +1,3 @@
-export default interface DataParams {
+export default interface RequestParams {
     id: string
 }
