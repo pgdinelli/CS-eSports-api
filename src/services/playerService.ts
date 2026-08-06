@@ -49,19 +49,23 @@ export async function findPlayerByIdService({ id }: RequestParams): Promise<Play
 
 export async function updatePlayerService({ id }: RequestParams, { name, org }: PlayerBodyProps): Promise<Player | null> {
 
-    const dataToUpdate = await prisma.player.update({
-        where: {
-            id
-        },
-        data: {
-            name,
-            org
-        }
-    });
+    try {
+        const dataToUpdate = await prisma.player.update({
+            where: {
+                id
+            },
+            data: {
+                name,
+                org
+            }
+        });
 
-    if (!dataToUpdate) return null;
+        if (!dataToUpdate) return null;
 
-    return dataToUpdate;
+        return dataToUpdate;
+    } catch (error) {
+        return null;
+    }
 }
 
 export async function deletePlayerService({ id }: RequestParams): Promise<Player | null> {
@@ -75,10 +79,6 @@ export async function deletePlayerService({ id }: RequestParams): Promise<Player
 
         return dataToDelete;
     } catch (error) {
-        // Prisma sends a specific error when it doesn't find data to delete, which prevents the server from sending http status codes
-        // The following line treats Prisma's error code, which lets the server send the correct http status as response
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') return null;
-
         return null;
     }
 

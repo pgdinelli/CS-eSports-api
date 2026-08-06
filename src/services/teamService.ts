@@ -81,10 +81,6 @@ export async function deleteTeamService({ id }: RequestParams): Promise<Team | n
 
         return dataToDelete;
     } catch (error) {
-        // Prisma sends a specific error when it doesn't find data to delete, which prevents the server from sending http status codes
-        // The following line treats Prisma's error code, which lets the server send the correct http status as response
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') return null;
-
         return null;
     }
 
