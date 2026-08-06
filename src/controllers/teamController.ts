@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { createTeamService, getAllTeamsService } from '../services/teamService.js';
+import { createTeamService, findTeamByIdService, getAllTeamsService, } from '../services/teamService.js';
+import RequestParams from '../utils/interfaces/RequestParams.js';
 import { Team } from '../lib/prisma/generated/prisma/client.js';
 
 export async function testResponse(req: FastifyRequest, res: FastifyReply) {
@@ -10,10 +11,10 @@ export async function testResponse(req: FastifyRequest, res: FastifyReply) {
     }
 }
 
-export async function createTeam(req: FastifyRequest<{Body: Team}>, res: FastifyReply) {
+export async function createTeam(req: FastifyRequest<{ Body: Team }>, res: FastifyReply) {
     try {
-        const {id, name, basedAt, createdAt} = req.body
-        const data = await createTeamService({id, name, basedAt, createdAt});
+        const { id, name, basedAt, createdAt } = req.body
+        const data = await createTeamService({ id, name, basedAt, createdAt });
 
         if (!data) return res.status(400).send({ message: 'Missing data' });
 
@@ -28,6 +29,19 @@ export async function getAllTeams(req: FastifyRequest, res: FastifyReply) {
         const data = await getAllTeamsService();
 
         if (!data) return res.status(404).send({ message: 'Teams not found' });
+
+        return res.status(200).send(data);
+    } catch (error) {
+        return res.status(500).send({ message: 'Internal server error', error });
+    }
+}
+
+export async function findTeamById(req: FastifyRequest<{ Params: RequestParams }>, res: FastifyReply) {
+    try {
+        const id = req.params.id
+        const data = await findTeamByIdService({ id });
+
+        if (!data) res.status(404).send({ message: 'Team not found' });
 
         return res.status(200).send(data);
     } catch (error) {
