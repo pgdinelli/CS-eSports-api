@@ -1,7 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { createTeamService, deleteTeamService, findTeamByIdService, getAllTeamsService, } from '../services/teamService.js';
+import { createTeamService, deleteTeamService, findTeamByIdService, getAllTeamsService, updateTeamService, } from '../services/teamService.js';
 import RequestParams from '../utils/interfaces/RequestParams.js';
 import { Team } from '../lib/prisma/generated/prisma/client.js';
+import TeamBodyProps from '../utils/interfaces/TeamBodyProps.js';
 
 export async function testResponse(req: FastifyRequest, res: FastifyReply) {
     try {
@@ -44,6 +45,22 @@ export async function findTeamById(req: FastifyRequest<{ Params: RequestParams }
         if (!data) res.status(404).send({ message: 'Team not found' });
 
         return res.status(200).send(data);
+    } catch (error) {
+        return res.status(500).send({ message: 'Internal server error', error });
+    }
+}
+
+export async function updateTeam(req: FastifyRequest<{ Params: RequestParams, Body: TeamBodyProps }>, res: FastifyReply) {
+    try {
+        const id = req.params.id;
+        if (!id) return res.status(400).send({ message: 'Missing Id field' });
+
+        const { name, basedAt } = req.body
+
+        const data = await updateTeamService({ id }, { name, basedAt });
+        if (!data) return res.status(404).send({ message: 'Team not found' });
+
+        return res.status(200).send({ message: 'Data updated successfully', data });
     } catch (error) {
         return res.status(500).send({ message: 'Internal server error', error });
     }

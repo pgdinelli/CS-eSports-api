@@ -2,6 +2,7 @@ import { prisma } from "../lib/prisma/prisma.js";
 import { Team } from "../lib/prisma/generated/prisma/client.js";
 
 import RequestParams from '../utils/interfaces/RequestParams.js'
+import TeamBodyProps from "../utils/interfaces/TeamBodyProps.js";
 
 export async function createTeamService({ id, name, basedAt, createdAt }: Team): Promise<Team> {
     
@@ -43,6 +44,22 @@ export async function findTeamByIdService({ id }: RequestParams): Promise<Team> 
     if(!team) throw new Error("Unable to find team");
 
     return team;
+}
+
+export async function updateTeamService({ id }: RequestParams, { name, basedAt }: TeamBodyProps): Promise<Team> {
+    const teamToUpdate = await prisma.team.update({
+        where: {
+            id
+        }, 
+        data: {
+            name,
+            basedAt
+        }
+    });
+
+    if(!teamToUpdate) throw new Error("Unable to update team");
+
+    return teamToUpdate;
 }
 
 export async function deleteTeamService({id}: RequestParams): Promise<Team> {
