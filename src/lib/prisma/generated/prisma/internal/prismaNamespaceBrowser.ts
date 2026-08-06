@@ -51,7 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  Player: 'Player'
+  Player: 'Player',
+  Team: 'Team'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -78,6 +79,16 @@ export const PlayerScalarFieldEnum = {
 } as const
 
 export type PlayerScalarFieldEnum = (typeof PlayerScalarFieldEnum)[keyof typeof PlayerScalarFieldEnum]
+
+
+export const TeamScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  basedAt: 'basedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
 
 
 export const SortOrder = {
