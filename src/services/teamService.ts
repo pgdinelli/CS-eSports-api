@@ -13,7 +13,7 @@ export async function createTeamService({ id, name, basedAt, createdAt }: Team):
         }
     });
 
-    if (teamExists) return null;
+    if (teamExists) return null; // Prevents team of being created if already exists another team with same name and base
 
     const newTeam = prisma.team.create({
         data: {
@@ -27,10 +27,10 @@ export async function createTeamService({ id, name, basedAt, createdAt }: Team):
     return newTeam;
 }
 
-export async function getAllTeamsService() {
+export async function getAllTeamsService(): Promise<Team[] | null> {
     const data = await prisma.team.findMany();
 
-    if (!data) return;
+    if (!data) return null;
     return data;
 }
 
@@ -62,10 +62,6 @@ export async function updateTeamService({ id }: RequestParams, { name, basedAt }
 
         return teamToUpdate;
     } catch (error) {
-        // Prisma sends a specific error when it doesn't find data to delete, which prevents the server from sending http status codes
-        // The following line treats Prisma's error code, which lets the server send the correct http status as response
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') return null;
-
         return null;
     }
 }
