@@ -77,6 +77,8 @@ export async function deletePlayerService({ id }: RequestParams): Promise<Player
             }
         });
 
+        if (!dataToDelete) return null;
+
         return dataToDelete;
     } catch (error) {
         return null;
