@@ -44,3 +44,18 @@ export async function findTeamByIdService({ id }: RequestParams): Promise<Team> 
 
     return team;
 }
+
+export async function deleteTeamService({id}: RequestParams): Promise<Team> {
+    
+    if(!id) throw new Error("Unable to delete");
+    
+    const dataToDelete = await prisma.team.delete({
+        where: {
+            id
+        }
+    });
+
+    if(!dataToDelete) throw new Error("Unable to delete");
+
+    return dataToDelete;
+}
